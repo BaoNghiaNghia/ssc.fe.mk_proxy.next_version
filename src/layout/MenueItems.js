@@ -56,8 +56,7 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
         key="tong-quan"
       >
         <NavLink onClick={toggleCollapsed} to={`${path}/tong-quan`}>
-          Proxy Management
-          {/* <span className="badge badge-primary menuItem">{versions[0].version}</span> */}
+          Proxies
         </NavLink>
       </Menu.Item>
 
@@ -73,36 +72,36 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
         key="business"
       >
         <NavLink onClick={toggleCollapsed} to={`${path}/business`}>
-          Package Purchase
+          Payment
         </NavLink>
       </Menu.Item>
       <Menu.Item
         icon={
           !topMenu && (
-            <NavLink className="menuItem-icon" to={`${path}/performance`}>
+            <NavLink className="menuItem-icon" to={`${path}/ecommerce/orders`}>
               <FiHome fontSize={16} color="gray"/>
             </NavLink>
           )
         }
-        key="performance"
+        key="ecommerce/orders"
       >
-        <NavLink onClick={toggleCollapsed} to={`${path}/performance`}>
-          Package Management
+        <NavLink onClick={toggleCollapsed} to={`${path}/ecommerce/orders`}>
+          Packages
         </NavLink>
       </Menu.Item>
       {!topMenu && <NavTitle className="sidebar-nav-title">SUPPORT</NavTitle>}
       <Menu.Item
         icon={
           !topMenu && (
-            <NavLink className="menuItem-icon" to={`${path}/main/chat/private/rofiq@gmail.com`}>
+            <NavLink className="menuItem-icon" to={`${path}/contact/grid`}>
               <FeatherIcon icon="message-square" />
             </NavLink>
           )
         }
-        key="chat"
+        key="Contact Support"
       >
-        <NavLink onClick={toggleCollapsed} to={`${path}/main/chat/private/rofiq@gmail.com`}>
-          Customer Support
+        <NavLink onClick={toggleCollapsed} to={`${path}/contact/grid`}>
+          Support
         </NavLink>
       </Menu.Item>
     </Menu>

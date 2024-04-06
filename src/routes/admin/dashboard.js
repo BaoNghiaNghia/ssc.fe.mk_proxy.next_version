@@ -15,10 +15,10 @@ function DashboardRoutes() {
   const { path } = useRouteMatch();
   return (
     <Switch>
+      <Route exact path={path} component={Overview} />
       <Route path={`${path}/tong-quan`} component={Overview} />
       <Route path={`${path}/quan-ly-may`} component={ServerManage} />
       <Route path={`${path}/social`} component={Dashboard} />
-      <Route exact path={path} component={Dashboard} />
       <Route exact path={`${path}/eco`} component={Ecommerce} />
       <Route exact path={`${path}/business`} component={Business} />
       <Route exact path={`${path}/performance`} component={Performance} />
