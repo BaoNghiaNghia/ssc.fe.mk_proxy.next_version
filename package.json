@@ -74,7 +74,7 @@
   },
   "homepage": "/",
   "scripts": {
-    "start": "env-cmd -f .env.${VENDOR} craco start",
+    "start": "env-cmd -f .env.local craco start",
     "start:local": "VENDOR=local npm run start",
     "start:pm2": "pm2 start npm --name 'MKProxy V2' -- run start:local",
     "start:staging": "VENDOR=staging npm run start",
