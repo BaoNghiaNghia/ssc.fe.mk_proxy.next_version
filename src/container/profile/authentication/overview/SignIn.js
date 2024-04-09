@@ -100,8 +100,8 @@ function SignIn() {
     setState({ ...state, checked });
   };
 
-  lock.on('authenticated', authResult => {
-    lock.getUserInfo(authResult.accessToken, error => {
+  lock.on('authenticated', (authResult) => {
+    lock.getUserInfo(authResult.accessToken, (error) => {
       if (error) {
         return;
       }
@@ -117,28 +117,21 @@ function SignIn() {
       </p>
       <div className="auth-contents">
         <Form name="login" form={form} onFinish={() => handleSubmit(formData)} layout="vertical">
-          <Heading as="h3">
-            Đăng nhập
-          </Heading>
+          <Heading as="h3">Đăng nhập</Heading>
           <Form.Item
-            
-            rules={[
-              { message: 'Please input your username or Email!', required: true }
-            ]}
+            rules={[{ message: 'Please input your username or Email!', required: true }]}
             initialValue="name@example.com"
             label="Username or Email Address"
           >
-            <Input name="email" onChange={handleChangeForm}/>
+            <Input name="email" onChange={handleChangeForm} />
           </Form.Item>
           <Form.Item
             name="password"
             initialValue="123456"
             label="Password"
-            rules={[
-              {required: true, message: 'Trường không được trống' }
-            ]}
+            rules={[{ required: true, message: 'Trường không được trống' }]}
           >
-            <Input.Password placeholder="Password" name="password" onChange={handleChangeForm}/>
+            <Input.Password placeholder="Password" name="password" onChange={handleChangeForm} />
           </Form.Item>
           <div className="auth-form-action">
             <Checkbox onChange={onChange} checked={state.checked}>

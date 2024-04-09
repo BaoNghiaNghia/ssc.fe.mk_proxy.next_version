@@ -30,7 +30,6 @@ const AuthReducer = (state = initState, action) => {
         ...state,
         login: data,
         loading: false,
-
       };
     case LOGIN_ERR:
       return {
