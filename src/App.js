@@ -13,6 +13,9 @@ import './static/css/style.css';
 import config from './config/config';
 import ProtectedRoute from './components/utilities/protectedRoute';
 import 'antd/dist/antd.less';
+import { AuthProvider } from './contexts/AuthContext';
+
+
 
 const { theme } = config;
 
@@ -26,6 +29,14 @@ const ProviderConfig = () => {
       auth: state.fb.auth,
     };
   });
+  // const { rtl, topMenu, darkMode, auth } = useSelector(state => {
+  //   return {
+  //     darkMode: state.ChangeLayoutMode.data,
+  //     rtl: state.ChangeLayoutMode.rtlData,
+  //     topMenu: state.ChangeLayoutMode.topMenu,
+  //     auth: state.fb.auth,
+  //   };
+  // });
 
   const [path, setPath] = useState(window.location.pathname);
 
@@ -47,12 +58,14 @@ const ProviderConfig = () => {
               <Spin />
             </div>
           ) : (
-            <Router basename={process.env.PUBLIC_URL}>
-              {!isLoggedIn ? <Route path="/" component={Auth} /> : <ProtectedRoute path="/admin" component={Admin} />}
-              {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
-                <Redirect to="/admin" />
-              )}
-            </Router>
+            <AuthProvider>
+              <Router basename={process.env.PUBLIC_URL}>
+                {!isLoggedIn ? <Route path="/" component={Auth} /> : <ProtectedRoute path="/admin" component={Admin} />}
+                {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
+                  <Redirect to="/admin" />
+                )}
+              </Router>
+            </AuthProvider>
           )}
         </ReactReduxFirebaseProvider>
       </ThemeProvider>

@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { hashHistory } from 'react-router';
 import { Link, NavLink, useHistory } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,25 +11,94 @@ import { login } from '../../../../redux/authentication/actionCreator';
 import { Checkbox } from '../../../../components/checkbox/checkbox';
 import Heading from '../../../../components/heading/heading';
 import { auth0options } from '../../../../config/auth0';
+import AuthContext from '../../../../contexts/AuthContext';
+import { useContext } from 'react';
+import actions from '../../../../redux/authentication/actions';
+
+const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutErr } = actions;
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 function SignIn() {
+  const authContext = useContext(AuthContext);
+  const { loginUser, user, errors, setErrors, authTokens} = authContext;
   const history = useHistory();
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.auth.loading);
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
   const [state, setState] = useState({
     checked: null,
   });
 
   const lock = new Auth0Lock(clientId, domain, auth0options);
 
-  const handleSubmit = useCallback(() => {
-    dispatch(login());
-    history.push('/admin');
-  }, [history, dispatch]);
+  // const handleSubmit = useCallback(() => {
+    // dispatch(login());
+  //   history.push('/admin');
+  // }, [history, dispatch]);
+
+  useEffect(() => {
+    if (authTokens != null) {
+      dispatch(loginSuccess(true));
+      history.push('/admin');
+    }
+  }, [authTokens])
+    
+
+
+
+  const handleSubmit = async (formData) => {
+    setLoading(true);
+    try {
+      const validationErrors = {};
+      if (!formData.email.trim()) {
+        validationErrors.email = 'Email is required';
+      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        validationErrors.email = 'Email is not valid';
+      }
+
+      if (!formData.password.trim()) {
+        validationErrors.password = 'Password is required';
+      }
+
+      setErrors(validationErrors);
+
+      if (Object.keys(validationErrors).length === 0) {
+        loginUser(formData.email, formData.password);
+      }
+
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+      // if (err.response) {
+      //   toast.error(t(`error_code.${err.response.data.error_code}`));
+      // }
+    }
+  };
+
+  const handleChangeForm = (e) => {
+
+    const { name, value } = e.target;
+    
+    console.log('name:', name)
+    console.log('value:', value)
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  useEffect(() => {
+    console.log(formData)
+  }, [formData])
 
   const onChange = (checked) => {
     setState({ ...state, checked });
@@ -39,7 +109,6 @@ function SignIn() {
       if (error) {
         return;
       }
-
       handleSubmit();
       lock.hide();
     });
@@ -51,19 +120,19 @@ function SignIn() {
         Don&rsquo;t have an account? <NavLink to="/register">Sign up now</NavLink>
       </p>
       <div className="auth-contents">
-        <Form name="login" form={form} onFinish={handleSubmit} layout="vertical">
+        <Form name="login" form={form} onFinish={() => handleSubmit(formData)} layout="vertical">
           <Heading as="h3">
             Đăng nhập
           </Heading>
           <Form.Item
-            name="username"
+            
             rules={[
               { message: 'Please input your username or Email!', required: true }
             ]}
             initialValue="name@example.com"
             label="Username or Email Address"
           >
-            <Input />
+            <Input name="email" onChange={handleChangeForm}/>
           </Form.Item>
           <Form.Item 
             name="password"
@@ -73,7 +142,7 @@ function SignIn() {
               {required: true, message: 'Trường không được trống' }
             ]}
           >
-            <Input.Password placeholder="Password" />
+            <Input.Password placeholder="Password" name="password" onChange={handleChangeForm}/>
           </Form.Item>
           <div className="auth-form-action">
             <Checkbox onChange={onChange} checked={state.checked}>

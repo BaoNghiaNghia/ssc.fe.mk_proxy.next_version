@@ -1,7 +1,9 @@
 import Cookies from 'js-cookie';
 import actions from './actions';
+// import { loginUserApi } from '../../api/Auth';
 
 const { LOGIN_BEGIN, LOGIN_SUCCESS, LOGIN_ERR, LOGOUT_BEGIN, LOGOUT_SUCCESS, LOGOUT_ERR } = actions;
+
 
 const initState = {
   login: Cookies.get('logedIn'),
@@ -15,6 +17,9 @@ const initState = {
  */
 const AuthReducer = (state = initState, action) => {
   const { type, data, err } = action;
+  console.log('==============================')
+  console.log(state)
+  console.log('==============================')
   switch (type) {
     case LOGIN_BEGIN:
       return {
@@ -26,6 +31,7 @@ const AuthReducer = (state = initState, action) => {
         ...state,
         login: data,
         loading: false,
+
       };
     case LOGIN_ERR:
       return {

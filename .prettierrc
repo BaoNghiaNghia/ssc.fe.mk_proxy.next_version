@@ -8,7 +8,7 @@
   "editor.detectIndentation": true,
   "editor.formatOnSave": true,
   "prettier.semi": true,
-  "prettier.eslintIntegration": true,
+  "prettier.eslintIntegration": false,
   "jsxBracketSameLine": false,
   "endOfLine":"auto"
 }
