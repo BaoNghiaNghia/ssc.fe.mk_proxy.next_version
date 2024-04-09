@@ -145,7 +145,6 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
-
   let loginUser = async (emailInput, passwordInput) => {
     let data = { email: emailInput, password: passwordInput };
     try {
