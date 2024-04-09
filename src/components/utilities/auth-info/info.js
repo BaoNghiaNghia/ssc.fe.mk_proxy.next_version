@@ -18,28 +18,30 @@ import AuthContext from '../../../contexts/AuthContext';
 
 function AuthInfo() {
   const dispatch = useDispatch();
-  const { isAuthenticate } = useSelector(state => {
+  const { isAuthenticate } = useSelector((state) => {
     return {
       isAuthenticate: state.fb.auth.uid,
     };
   });
 
-  const authContext = useContext(AuthContext)
+  const authContext = useContext(AuthContext);
 
-  const { user } = authContext;
+  const { user, logoutUser } = authContext;
 
   const [state, setState] = useState({
     flag: 'english',
   });
   const { flag } = state;
 
-  const SignOut = e => {
+  const SignOut = (e) => {
     e.preventDefault();
-    if (isAuthenticate) {
-      dispatch(fbAuthLogout(dispatch(logOut())));
-    } else {
-      dispatch(logOut());
-    }
+    // if (isAuthenticate) {
+    //   dispatch(fbAuthLogout(dispatch(logOut())));
+    // } else {
+    //   dispatch(logOut());
+    // }
+    logoutUser();
+    dispatch(logOut());
   };
 
   const userContent = (
@@ -86,7 +88,7 @@ function AuthInfo() {
     </UserDropDwon>
   );
 
-  const onFlagChangeHandle = value => {
+  const onFlagChangeHandle = (value) => {
     setState({
       ...state,
       flag: value,

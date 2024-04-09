@@ -7,6 +7,8 @@ const actions = {
   LOGOUT_SUCCESS: 'LOGOUT_SUCCESS',
   LOGOUT_ERR: 'LOGOUT_ERR',
 
+  USER_PROFILE: 'USER_PROFILE',
+
   loginBegin: () => {
     return {
       type: actions.LOGIN_BEGIN,
@@ -44,6 +46,13 @@ const actions = {
     return {
       type: actions.LOGOUT_ERR,
       err,
+    };
+  },
+
+  userProfile: (data) => {
+    return {
+      type: actions.USER_PROFILE,
+      data,
     };
   },
 };

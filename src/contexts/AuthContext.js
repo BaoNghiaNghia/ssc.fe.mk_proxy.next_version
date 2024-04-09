@@ -8,14 +8,13 @@ import Cookies from 'js-cookie';
 import actions from '../redux/authentication/actions';
 import { useDispatch, useSelector } from 'react-redux';
 
-const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutErr } = actions;
+const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutErr, userProfile } = actions;
 
 const AuthContext = createContext();
 
 export default AuthContext;
 
 export const AuthProvider = ({ children }) => {
-
   // const { rtl, isLoggedIn, topMenu, darkMode, auth } = useSelector(state => {
   //   return {
   //     darkMode: state.ChangeLayoutMode.data,
@@ -31,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState({});
   const [domain, setDomain] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   let [user, setUser] = useState(
     localStorage.getItem('authTokens') ? {} : null,
     // null
@@ -86,23 +85,22 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await fetchProfileDetail();
       if (response.status === 200) {
-        console.log('response:', response)
         setUser(response.data.data);
+        dispatch(userProfile(response.data.data));
       }
     } catch (err) {
-      // localStorage.clear();
+      localStorage.clear();
       // dispatch(logoutSuccess(true))
       // dispatch(logoutSuccess(true));
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   useEffect(() => {
     if (authTokens) {
-      setIsLoggedIn(true)
-      getProfile()
+      getProfile();
     }
-  }, [authTokens])
+  }, [authTokens]);
 
   // useEffect(() => {
   //   // if (authTokens) {
@@ -147,15 +145,14 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
-
   let loginUser = async (emailInput, passwordInput) => {
     let data = { email: emailInput, password: passwordInput };
     try {
       const response = await loginUserApi(data);
       if (response.status === 200) {
         let token = response.data.data.token;
-        setItem('authTokens', JSON.stringify(token))
-        // setAuthTokens(token);
+        setItem('authTokens', JSON.stringify(token));
+        setAuthTokens(token);
         dispatch(loginSuccess(true));
         // setIsLoggedIn(true)
       }
@@ -171,6 +168,7 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem('authTokens');
+    dispatch(logoutSuccess(true));
     // navigate.push('/login');
   };
 
@@ -189,7 +187,7 @@ export const AuthProvider = ({ children }) => {
     setSuccess,
     domain,
     history,
-    isLoggedIn
+    isLoggedIn,
   };
 
   return <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>;

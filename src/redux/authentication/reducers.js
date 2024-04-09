@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import actions from './actions';
 // import { loginUserApi } from '../../api/Auth';
 
-const { LOGIN_BEGIN, LOGIN_SUCCESS, LOGIN_ERR, LOGOUT_BEGIN, LOGOUT_SUCCESS, LOGOUT_ERR } = actions;
+const { LOGIN_BEGIN, LOGIN_SUCCESS, LOGIN_ERR, LOGOUT_BEGIN, LOGOUT_SUCCESS, LOGOUT_ERR, USER_PROFILE } = actions;
 
 const initState = {
   login: Cookies.get('logedIn'),
@@ -52,6 +52,12 @@ const AuthReducer = (state = initState, action) => {
       return {
         ...state,
         error: err,
+        loading: false,
+      };
+    case USER_PROFILE:
+      return {
+        ...state,
+        profile: data,
         loading: false,
       };
     default:
