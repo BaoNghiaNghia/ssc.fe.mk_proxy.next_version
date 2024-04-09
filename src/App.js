@@ -111,7 +111,7 @@ const ProviderConfig = () => {
       </ThemeProvider>
     </ConfigProvider>
   );
-};
+}
 
 function App() {
   return (
