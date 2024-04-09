@@ -22,7 +22,7 @@ const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 function SignIn() {
   const authContext = useContext(AuthContext);
-  const { loginUser, user, errors, setErrors, authTokens} = authContext;
+  const { loginUser, user, errors, setErrors, authTokens } = authContext;
   const history = useHistory();
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.auth.loading);
@@ -39,19 +39,16 @@ function SignIn() {
   const lock = new Auth0Lock(clientId, domain, auth0options);
 
   // const handleSubmit = useCallback(() => {
-    // dispatch(login());
+  // dispatch(login());
   //   history.push('/admin');
   // }, [history, dispatch]);
 
-  useEffect(() => {
-    if (authTokens != null) {
-      dispatch(loginSuccess(true));
-      history.push('/admin');
-    }
-  }, [authTokens])
-    
-
-
+  // useEffect(() => {
+  //   if (authTokens != null) {
+  //     dispatch(loginSuccess(true));
+  //     history.push('/');
+  //   }
+  // }, [authTokens]);
 
   const handleSubmit = async (formData) => {
     setLoading(true);
@@ -84,11 +81,10 @@ function SignIn() {
   };
 
   const handleChangeForm = (e) => {
-
     const { name, value } = e.target;
-    
-    console.log('name:', name)
-    console.log('value:', value)
+
+    console.log('name:', name);
+    console.log('value:', value);
 
     setFormData({
       ...formData,
@@ -97,15 +93,15 @@ function SignIn() {
   };
 
   useEffect(() => {
-    console.log(formData)
-  }, [formData])
+    console.log(formData);
+  }, [formData]);
 
   const onChange = (checked) => {
     setState({ ...state, checked });
   };
 
-  lock.on('authenticated', authResult => {
-    lock.getUserInfo(authResult.accessToken, error => {
+  lock.on('authenticated', (authResult) => {
+    lock.getUserInfo(authResult.accessToken, (error) => {
       if (error) {
         return;
       }
@@ -121,28 +117,21 @@ function SignIn() {
       </p>
       <div className="auth-contents">
         <Form name="login" form={form} onFinish={() => handleSubmit(formData)} layout="vertical">
-          <Heading as="h3">
-            Đăng nhập
-          </Heading>
+          <Heading as="h3">Đăng nhập</Heading>
           <Form.Item
-            
-            rules={[
-              { message: 'Please input your username or Email!', required: true }
-            ]}
+            rules={[{ message: 'Please input your username or Email!', required: true }]}
             initialValue="name@example.com"
             label="Username or Email Address"
           >
-            <Input name="email" onChange={handleChangeForm}/>
+            <Input name="email" onChange={handleChangeForm} />
           </Form.Item>
-          <Form.Item 
+          <Form.Item
             name="password"
             initialValue="123456"
             label="Password"
-            rules={[
-              {required: true, message: 'Trường không được trống' }
-            ]}
+            rules={[{ required: true, message: 'Trường không được trống' }]}
           >
-            <Input.Password placeholder="Password" name="password" onChange={handleChangeForm}/>
+            <Input.Password placeholder="Password" name="password" onChange={handleChangeForm} />
           </Form.Item>
           <div className="auth-form-action">
             <Checkbox onChange={onChange} checked={state.checked}>

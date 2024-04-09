@@ -1,14 +1,14 @@
 import React, { lazy } from 'react';
 import FeatherIcon from 'feather-icons-react';
-import { Row, Col, Table} from 'antd';
+import { Row, Col, Table } from 'antd';
 import { CardBarChart2, EChartCard } from './style';
 import { PageHeader } from '../../components/page-headers/page-headers';
 import { Cards } from '../../components/cards/frame/cards-frame';
 import { Button } from '../../components/buttons/buttons';
-import { Main, TableWrapper} from '../styled';
-import Heading from '../../components/heading/heading'; 
+import { Main, TableWrapper } from '../styled';
+import Heading from '../../components/heading/heading';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchListUserProxyApi } from "../../api/UserProxy";
+import { fetchListUserProxyApi } from '../../api/UserProxy';
 // import { fetchAdminListUser } from '../../api/Auth';
 import { useState, setState, useEffect } from 'react';
 
@@ -21,7 +21,7 @@ function Overview() {
   //     orders: state.orders.data,
   //   };
   // });
-  
+
   // if (orders.length) {
   //   orders.map((value, key) => {
   //     const { status, orderId, customers, amount, date } = value;
@@ -69,7 +69,7 @@ function Overview() {
         const itemsWithIds = data.map((item, index) => {
           return { ...item, number: index + 1 };
         });
-        setTableData(itemsWithIds);
+        setUserProxies(itemsWithIds);
       }
     } catch (err) {
       console.error(err);
@@ -85,18 +85,18 @@ function Overview() {
   const columns = [
     {
       title: 'Url',
-      dataIndex: 'url',
-      key: 'url',
+      dataIndex: 'proxy_url',
+      key: 'proxy_url',
     },
     {
       title: 'Type',
-      dataIndex: 'type',
+      dataIndex: 'proxy_type',
       key: 'type',
     },
     {
       title: 'Version',
-      dataIndex: 'version',
-      key: 'version',
+      dataIndex: 'proxy_version',
+      key: 'proxy_version',
     },
     {
       title: 'Started at',
@@ -115,7 +115,7 @@ function Overview() {
     },
   ];
 
-  const onSelectChange = selectedRowKey => {
+  const onSelectChange = (selectedRowKey) => {
     setState({ ...state, selectedRowKeys: selectedRowKey });
   };
   const rowSelection = {
@@ -134,7 +134,6 @@ function Overview() {
               <FeatherIcon icon="plus" size={14} />
               Thêm mới
             </Button>
-
           </div>,
         ]}
       />
@@ -204,13 +203,13 @@ function Overview() {
         <Row gutter={25}>
           <Col xxl={24}>
             <TableWrapper className="table-order table-responsive">
-                <Table
-                  rowSelection={rowSelection}
-                  dataSource={userProxies}
-                  columns={columns}
-                  // pagination={{ pageSize: 7, showSizeChanger: true, total: orders.length }}
-                />
-              </TableWrapper>
+              <Table
+                rowSelection={rowSelection}
+                dataSource={userProxies}
+                columns={columns}
+                // pagination={{ pageSize: 7, showSizeChanger: true, total: orders.length }}
+              />
+            </TableWrapper>
           </Col>
         </Row>
       </Main>

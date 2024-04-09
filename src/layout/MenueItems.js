@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu } from 'antd';
 import { NavLink, useRouteMatch } from 'react-router-dom';
-import { FiHome } from "react-icons/fi";
+import { FiHome } from 'react-icons/fi';
 import FeatherIcon from 'feather-icons-react';
 import propTypes from 'prop-types';
 import { NavTitle } from './style';
@@ -49,7 +49,7 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
         icon={
           !topMenu && (
             <NavLink className="menuItem-icon" to={`${path}/tong-quan`}>
-              <FiHome fontSize={16} color="gray"/>
+              <FiHome fontSize={16} color="gray" />
             </NavLink>
           )
         }
@@ -65,7 +65,7 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
         icon={
           !topMenu && (
             <NavLink className="menuItem-icon" to={`${path}/business`}>
-              <FiHome fontSize={16} color="gray"/>
+              <FiHome fontSize={16} color="gray" />
             </NavLink>
           )
         }
@@ -79,7 +79,7 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
         icon={
           !topMenu && (
             <NavLink className="menuItem-icon" to={`${path}/ecommerce/orders`}>
-              <FiHome fontSize={16} color="gray"/>
+              <FiHome fontSize={16} color="gray" />
             </NavLink>
           )
         }
@@ -111,7 +111,7 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
 MenuItems.propTypes = {
   darkMode: propTypes.bool,
   topMenu: propTypes.bool,
-  toggleCollapsed: propTypes.func
+  toggleCollapsed: propTypes.func,
 };
 
 export default MenuItems;

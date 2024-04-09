@@ -8,6 +8,8 @@ import { ReactReduxFirebaseProvider, isLoaded } from 'react-redux-firebase';
 import { ConfigProvider, Spin } from 'antd';
 import store, { rrfProps } from './redux/store';
 import Admin from './routes/admin';
+import Customer from './routes/customer';
+import Coordinator from './routes';
 import Auth from './routes/auth';
 import './static/css/style.css';
 import config from './config/config';
@@ -15,12 +17,10 @@ import ProtectedRoute from './components/utilities/protectedRoute';
 import 'antd/dist/antd.less';
 import { AuthProvider } from './contexts/AuthContext';
 
-
-
 const { theme } = config;
 
 const ProviderConfig = () => {
-  const { rtl, isLoggedIn, topMenu, darkMode, auth } = useSelector(state => {
+  const { rtl, isLoggedIn, topMenu, darkMode, auth } = useSelector((state) => {
     return {
       darkMode: state.ChangeLayoutMode.data,
       rtl: state.ChangeLayoutMode.rtlData,
@@ -60,10 +60,30 @@ const ProviderConfig = () => {
           ) : (
             <AuthProvider>
               <Router basename={process.env.PUBLIC_URL}>
-                {!isLoggedIn ? <Route path="/" component={Auth} /> : <ProtectedRoute path="/admin" component={Admin} />}
+                {/* {!isLoggedIn ? <Route path="/" component={Auth} /> : <ProtectedRoute path="/admin" component={Admin} />}
+                {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
+                  <Redirect to="/admin" />
+                )} */}
+                {!isLoggedIn ? (
+                  <Route path="/" component={Auth} />
+                ) : (
+                  <>
+                    {/* <ProtectedRoute path="/admin" component={Admin} /> */}
+                    {/* <Route path="/customer" component={Customer} /> */}
+                    <Route path="/admin" component={Admin} />
+                  </>
+                )}
                 {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
                   <Redirect to="/admin" />
                 )}
+                {/* {!isLoggedIn ? (
+                  <Route path="/" component={Auth} />
+                ) : (
+                  <ProtectedRoute path="/coordinator" component={Coordinator} />
+                )} */}
+                {/* {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
+                  <Redirect to="/admin" />
+                )} */}
               </Router>
             </AuthProvider>
           )}
@@ -71,7 +91,7 @@ const ProviderConfig = () => {
       </ThemeProvider>
     </ConfigProvider>
   );
-}
+};
 
 function App() {
   return (
