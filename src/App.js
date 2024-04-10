@@ -100,10 +100,10 @@ const ProviderConfig = () => {
                     <ProtectedRoute path="/customer" component={Customer} />
                   </>
                 )}
-                {isLoggedIn && <Redirect to="/customer" />}
-                {/* {isLoggedIn &&
+                {/* {isLoggedIn && <Redirect to="/customer" />} */}
+                {isLoggedIn &&
                   (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) &&
-                  (profile?.group?.role === 'admin' ? <Redirect to="/admin" /> : <Redirect to="/customer" />)} */}
+                  (profile?.group?.role === 'admin' ? <Redirect to="/admin" /> : <Redirect to="/customer" />)}
               </Router>
             </AuthProvider>
           )}
