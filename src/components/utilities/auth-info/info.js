@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,27 +13,35 @@ import { Dropdown } from '../../dropdown/dropdown';
 import { logOut } from '../../../redux/authentication/actionCreator';
 import { fbAuthLogout } from '../../../redux/firebase/auth/actionCreator';
 import Heading from '../../heading/heading';
+import { useContext } from 'react';
+import AuthContext from '../../../contexts/AuthContext';
 
 function AuthInfo() {
   const dispatch = useDispatch();
-  const { isAuthenticate } = useSelector(state => {
+  const { isAuthenticate } = useSelector((state) => {
     return {
       isAuthenticate: state.fb.auth.uid,
     };
   });
+
+  const authContext = useContext(AuthContext);
+
+  const { user, logoutUser } = authContext;
 
   const [state, setState] = useState({
     flag: 'english',
   });
   const { flag } = state;
 
-  const SignOut = e => {
+  const SignOut = (e) => {
     e.preventDefault();
-    if (isAuthenticate) {
-      dispatch(fbAuthLogout(dispatch(logOut())));
-    } else {
-      dispatch(logOut());
-    }
+    // if (isAuthenticate) {
+    //   dispatch(fbAuthLogout(dispatch(logOut())));
+    // } else {
+    //   dispatch(logOut());
+    // }
+    logoutUser();
+    dispatch(logOut());
   };
 
   const userContent = (
@@ -42,11 +50,11 @@ function AuthInfo() {
         <figure className="user-dropdwon__info">
           <img src={require('../../../static/img/avatar/chat-auth.png')} alt="" />
           <figcaption>
-            <Heading as="h5">Abdullah Bin Talha</Heading>
-            <p>UI Expert</p>
+            <Heading as="h5">{user?.email}</Heading>
+            <p>role: {user?.group?.role}</p>
           </figcaption>
         </figure>
-        <ul className="user-dropdwon__links">
+        {/* <ul className="user-dropdwon__links">
           <li>
             <Link to="#">
               <FeatherIcon icon="user" /> Profile
@@ -72,7 +80,7 @@ function AuthInfo() {
               <FeatherIcon icon="bell" /> Help
             </Link>
           </li>
-        </ul>
+        </ul> */}
         <Link className="user-dropdwon__bottomAction" onClick={SignOut} to="#">
           <FeatherIcon icon="log-out" /> Sign Out
         </Link>
@@ -80,7 +88,7 @@ function AuthInfo() {
     </UserDropDwon>
   );
 
-  const onFlagChangeHandle = value => {
+  const onFlagChangeHandle = (value) => {
     setState({
       ...state,
       flag: value,

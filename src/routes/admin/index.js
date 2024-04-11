@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Spin } from 'antd';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 
@@ -11,6 +11,8 @@ import Features from './features';
 import Axios from './axios';
 import Gallery from './gallery';
 import withAdminLayout from '../../layout/withAdminLayout';
+import { useContext } from 'react';
+import AuthContext from '../../contexts/AuthContext';
 
 const Projects = lazy(() => import('./projects'));
 const Calendars = lazy(() => import('../../container/Calendar'));
@@ -31,6 +33,10 @@ const Task = lazy(() => import('../../container/task/Index'));
 function Admin() {
   const { path } = useRouteMatch();
 
+  const authContext = useContext(AuthContext);
+  const { user } = authContext;
+  const [role, setRole] = useState(null);
+
   return (
     <Switch>
       <Suspense
@@ -48,7 +54,7 @@ function Admin() {
         <Route path={`${path}/users`} component={Users} />
         <Route path={`${path}/gallery`} component={Gallery} />
         <Route path={`${path}/project`} component={Projects} />
-        <Route path={`${path}/calendar`} component={Calendars} />        
+        <Route path={`${path}/calendar`} component={Calendars} />
         <Route path={`${path}/app/kanban`} component={Kanban} />
         <Route path={`${path}/email/:page`} component={Inbox} />
         <Route path={`${path}/firestore`} component={Firebase} />

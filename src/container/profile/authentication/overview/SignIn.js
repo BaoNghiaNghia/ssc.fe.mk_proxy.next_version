@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useState, useCallback, useEffect } from 'react';
+import { hashHistory } from 'react-router';
+import { Link, NavLink, useHistory } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
 import { useSelector } from 'react-redux';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -12,37 +13,31 @@ import Heading from '../../../../components/heading/heading';
 import { auth0options } from '../../../../config/auth0';
 import AuthContext from '../../../../contexts/AuthContext';
 import { useContext } from 'react';
+import actions from '../../../../redux/authentication/actions';
+import { useDispatch } from 'react-redux';
+
+const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutErr } = actions;
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 function SignIn() {
   const authContext = useContext(AuthContext);
-  const { loginUser } = authContext;
-  // const history = useHistory();
-  // const dispatch = useDispatch();
+  const { loginUser, user, errors, setErrors, authTokens } = authContext;
+  const history = useHistory();
+  const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.auth.loading);
-  const [form] = Form.useForm();
-  const [state, setState] = useState({
-    checked: null,
-  });
-
   const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+  const [state, setState] = useState({
+    checked: null,
+  });
 
   const lock = new Auth0Lock(clientId, domain, auth0options);
-
-  const handleChangeForm = (e) => {
-    // setErrors({});
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
 
   const handleSubmit = async (formData) => {
     setLoading(true);
@@ -58,26 +53,37 @@ function SignIn() {
         validationErrors.password = 'Password is required';
       }
 
-      // setErrors(validationErrors);
+      setErrors(validationErrors);
 
       if (Object.keys(validationErrors).length === 0) {
-        // loginUser(formData.email, formData.password);
+        loginUser(formData.email, formData.password);
       }
 
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      // console.log(err);
+      console.log(err);
       // if (err.response) {
       //   toast.error(t(`error_code.${err.response.data.error_code}`));
       // }
     }
   };
 
-  // const handleSubmit = useCallback(() => {
-  //   dispatch(login());
-  //   history.push('/admin');
-  // }, [history, dispatch]);
+  const handleChangeForm = (e) => {
+    const { name, value } = e.target;
+
+    console.log('name:', name);
+    console.log('value:', value);
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   const onChange = (checked) => {
     setState({ ...state, checked });
@@ -88,7 +94,6 @@ function SignIn() {
       if (error) {
         return;
       }
-
       handleSubmit();
       lock.hide();
     });
@@ -110,6 +115,7 @@ function SignIn() {
             <Input name="email" onChange={handleChangeForm} />
           </Form.Item>
           <Form.Item
+            name="password"
             initialValue="123456"
             label="Password"
             rules={[{ required: true, message: 'Trường không được trống' }]}
@@ -159,7 +165,8 @@ function SignIn() {
         </Form>
       </div>
     </AuthWrapper>
-  );
-}
+  )}
+
+
 
 export default SignIn;
