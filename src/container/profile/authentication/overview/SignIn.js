@@ -2,12 +2,12 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { hashHistory } from 'react-router';
 import { Link, NavLink, useHistory } from 'react-router-dom';
 import { Form, Input, Button } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { FacebookOutlined, TwitterOutlined } from '@ant-design/icons';
 import { Auth0Lock } from 'auth0-lock';
 import { AuthWrapper } from './style';
-import { login } from '../../../../redux/authentication/actionCreator';
+// import { login } from '../../../../redux/authentication/actionCreator';
 import { Checkbox } from '../../../../components/checkbox/checkbox';
 import Heading from '../../../../components/heading/heading';
 import { auth0options } from '../../../../config/auth0';
@@ -34,6 +34,12 @@ function SignIn() {
   });
   const [state, setState] = useState({
     checked: null,
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
   });
 
   const lock = new Auth0Lock(clientId, domain, auth0options);
@@ -102,6 +108,8 @@ function SignIn() {
 
   lock.on('authenticated', (authResult) => {
     lock.getUserInfo(authResult.accessToken, (error) => {
+  lock.on('authenticated', (authResult) => {
+    lock.getUserInfo(authResult.accessToken, (error) => {
       if (error) {
         return;
       }
@@ -118,11 +126,15 @@ function SignIn() {
       <div className="auth-contents">
         <Form name="login" form={form} onFinish={() => handleSubmit(formData)} layout="vertical">
           <Heading as="h3">Đăng nhập</Heading>
+        <Form name="login" form={form} onFinish={() => handleSubmit(formData)} layout="vertical">
+          <Heading as="h3">Đăng nhập</Heading>
           <Form.Item
+            rules={[{ message: 'Please input your username or Email!', required: true }]}
             rules={[{ message: 'Please input your username or Email!', required: true }]}
             initialValue="name@example.com"
             label="Username or Email Address"
           >
+            <Input name="email" onChange={handleChangeForm} />
             <Input name="email" onChange={handleChangeForm} />
           </Form.Item>
           <Form.Item
@@ -130,7 +142,9 @@ function SignIn() {
             initialValue="123456"
             label="Password"
             rules={[{ required: true, message: 'Trường không được trống' }]}
+            rules={[{ required: true, message: 'Trường không được trống' }]}
           >
+            <Input.Password placeholder="Password" name="password" onChange={handleChangeForm} />
             <Input.Password placeholder="Password" name="password" onChange={handleChangeForm} />
           </Form.Item>
           <div className="auth-form-action">

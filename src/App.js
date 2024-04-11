@@ -6,6 +6,7 @@ import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom';
 import { ReactReduxFirebaseProvider, isLoaded } from 'react-redux-firebase';
 import { ConfigProvider, Spin } from 'antd';
+import { AuthProvider } from './contexts/AuthContext';
 import store, { rrfProps } from './redux/store';
 import Admin from './routes/admin';
 import Customer from './routes/customer';
@@ -23,6 +24,7 @@ const { loginSuccess } = actions;
 const { theme } = config;
 
 const ProviderConfig = () => {
+  const { rtl, isLoggedIn, topMenu, darkMode, auth } = useSelector((state) => {
   const dispatch = useDispatch();
   const { rtl, isLoggedIn, topMenu, darkMode, auth, profile } = useSelector((state) => {
     return {
@@ -82,6 +84,30 @@ const ProviderConfig = () => {
   }, [setPath]);
 
   return (
+    <AuthProvider>
+      <ConfigProvider direction={rtl ? 'rtl' : 'ltr'}>
+        {/* <AuthProvider> */}
+        <ThemeProvider theme={{ ...theme, rtl, topMenu, darkMode }}>
+          {/* <AuthProvider> */}
+          <ReactReduxFirebaseProvider {...rrfProps}>
+            {!isLoaded(auth) ? (
+              <div className="spin">
+                <Spin />
+              </div>
+            ) : (
+              <Router basename={process.env.PUBLIC_URL}>
+                {!isLoggedIn ? <Route path="/" component={Auth} /> : <ProtectedRoute path="/admin" component={Admin} />}
+                {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
+                  <Redirect to="/admin" />
+                )}
+              </Router>
+            )}
+          </ReactReduxFirebaseProvider>
+          {/* </AuthProvider> */}
+        </ThemeProvider>
+        {/* </AuthProvider> */}
+      </ConfigProvider>
+    </AuthProvider>
     <ConfigProvider direction={rtl ? 'rtl' : 'ltr'}>
       <ThemeProvider theme={{ ...theme, rtl, topMenu, darkMode }}>
         <ReactReduxFirebaseProvider {...rrfProps}>
@@ -111,6 +137,7 @@ const ProviderConfig = () => {
       </ThemeProvider>
     </ConfigProvider>
   );
+};
 };
 
 function App() {
