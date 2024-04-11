@@ -16,7 +16,6 @@ import './static/css/style.css';
 import config from './config/config';
 import ProtectedRoute from './components/utilities/protectedRoute';
 import 'antd/dist/antd.less';
-import { AuthProvider } from './contexts/AuthContext';
 import actions from './redux/authentication/actions';
 
 const { loginSuccess } = actions;
@@ -24,7 +23,6 @@ const { loginSuccess } = actions;
 const { theme } = config;
 
 const ProviderConfig = () => {
-  const { rtl, isLoggedIn, topMenu, darkMode, auth } = useSelector((state) => {
   const dispatch = useDispatch();
   const { rtl, isLoggedIn, topMenu, darkMode, auth, profile } = useSelector((state) => {
     return {
@@ -108,37 +106,8 @@ const ProviderConfig = () => {
         {/* </AuthProvider> */}
       </ConfigProvider>
     </AuthProvider>
-    <ConfigProvider direction={rtl ? 'rtl' : 'ltr'}>
-      <ThemeProvider theme={{ ...theme, rtl, topMenu, darkMode }}>
-        <ReactReduxFirebaseProvider {...rrfProps}>
-          {!isLoaded(auth) ? (
-            <div className="spin">
-              <Spin />
-            </div>
-          ) : (
-            <AuthProvider>
-              <Router basename={process.env.PUBLIC_URL}>
-                {!isLoggedIn ? (
-                  <Route path="/" component={Auth} />
-                ) : (
-                  <>
-                    <ProtectedRoute path="/admin" component={Admin} />
-                    <ProtectedRoute path="/customer" component={Customer} />
-                  </>
-                )}
-                {/* {isLoggedIn && <Redirect to="/customer" />} */}
-                {isLoggedIn &&
-                  (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) &&
-                  (profile?.group?.role === 'admin' ? <Redirect to="/admin" /> : <Redirect to="/customer" />)}
-              </Router>
-            </AuthProvider>
-          )}
-        </ReactReduxFirebaseProvider>
-      </ThemeProvider>
-    </ConfigProvider>
-  );
-};
-};
+  )
+  }
 
 function App() {
   return (

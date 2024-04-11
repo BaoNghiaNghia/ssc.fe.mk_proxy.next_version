@@ -14,6 +14,7 @@ import { auth0options } from '../../../../config/auth0';
 import AuthContext from '../../../../contexts/AuthContext';
 import { useContext } from 'react';
 import actions from '../../../../redux/authentication/actions';
+import { useDispatch } from 'react-redux';
 
 const { loginBegin, loginSuccess, loginErr, logoutBegin, logoutSuccess, logoutErr } = actions;
 
@@ -36,25 +37,7 @@ function SignIn() {
     checked: null,
   });
 
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
   const lock = new Auth0Lock(clientId, domain, auth0options);
-
-  // const handleSubmit = useCallback(() => {
-  // dispatch(login());
-  //   history.push('/admin');
-  // }, [history, dispatch]);
-
-  // useEffect(() => {
-  //   if (authTokens != null) {
-  //     dispatch(loginSuccess(true));
-  //     history.push('/');
-  //   }
-  // }, [authTokens]);
 
   const handleSubmit = async (formData) => {
     setLoading(true);
@@ -108,8 +91,6 @@ function SignIn() {
 
   lock.on('authenticated', (authResult) => {
     lock.getUserInfo(authResult.accessToken, (error) => {
-  lock.on('authenticated', (authResult) => {
-    lock.getUserInfo(authResult.accessToken, (error) => {
       if (error) {
         return;
       }
@@ -126,15 +107,11 @@ function SignIn() {
       <div className="auth-contents">
         <Form name="login" form={form} onFinish={() => handleSubmit(formData)} layout="vertical">
           <Heading as="h3">Đăng nhập</Heading>
-        <Form name="login" form={form} onFinish={() => handleSubmit(formData)} layout="vertical">
-          <Heading as="h3">Đăng nhập</Heading>
           <Form.Item
-            rules={[{ message: 'Please input your username or Email!', required: true }]}
             rules={[{ message: 'Please input your username or Email!', required: true }]}
             initialValue="name@example.com"
             label="Username or Email Address"
           >
-            <Input name="email" onChange={handleChangeForm} />
             <Input name="email" onChange={handleChangeForm} />
           </Form.Item>
           <Form.Item
@@ -142,9 +119,7 @@ function SignIn() {
             initialValue="123456"
             label="Password"
             rules={[{ required: true, message: 'Trường không được trống' }]}
-            rules={[{ required: true, message: 'Trường không được trống' }]}
           >
-            <Input.Password placeholder="Password" name="password" onChange={handleChangeForm} />
             <Input.Password placeholder="Password" name="password" onChange={handleChangeForm} />
           </Form.Item>
           <div className="auth-form-action">
@@ -190,7 +165,8 @@ function SignIn() {
         </Form>
       </div>
     </AuthWrapper>
-  );
-}
+  )}
+
+
 
 export default SignIn;
