@@ -5,6 +5,7 @@ import { useRouteMatch } from 'react-router-dom/cjs/react-router-dom.min';
 const Dashboard = lazy(() => import('../../container/dashboard'));
 const Ecommerce = lazy(() => import('../../container/dashboard/Ecommerce'));
 const Business = lazy(() => import('../../container/dashboard/Business'));
+const PackagePlans = lazy(() => import('../../container/packagePlans/PackagePlans'));
 const Performance = lazy(() => import('../../container/dashboard/Performance'));
 const CRM = lazy(() => import('../../container/dashboard/CRM'));
 const Overview = lazy(() => import('../../container/dashboard/Overview'));
@@ -21,6 +22,7 @@ function DashboardRoutes() {
       <Route path={`${path}/social`} component={Dashboard} />
       <Route exact path={`${path}/eco`} component={Ecommerce} />
       <Route exact path={`${path}/business`} component={Business} />
+      <Route exact path={`${path}/package/plans`} component={PackagePlans} />
       <Route exact path={`${path}/performance`} component={Performance} />
       <Route exact path={`${path}/crm`} component={CRM} />
       <Route exact path={`${path}/sales`} component={Sales} />

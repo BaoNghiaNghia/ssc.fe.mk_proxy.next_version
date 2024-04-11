@@ -7,6 +7,7 @@ const ProductEdit = lazy(() => import('../../container/ecommerce/product/EditPro
 const ProductDetails = lazy(() => import('../../container/ecommerce/product/ProductDetails'));
 const Invoice = lazy(() => import('../../container/ecommerce/Invoice'));
 const Orders = lazy(() => import('../../container/ecommerce/Orders'));
+const Packages = lazy(() => import('../../container/packageManager/Packages'));
 const Sellers = lazy(() => import('../../container/ecommerce/Sellers'));
 const Cart = lazy(() => import('../../container/ecommerce/Cart'));
 
@@ -20,6 +21,10 @@ function EcommerceRoute() {
       <Route exact path={`${path}/productDetails/:id`} component={ProductDetails} />
       <Route exact path={`${path}/invoice`} component={Invoice} />
       <Route exact path={`${path}/orders`} component={Orders} />
+
+      {/* *** */}
+      <Route exact path={`${path}/packages`} component={Packages} />
+
       <Route exact path={`${path}/sellers`} component={Sellers} />
       <Route path={`${path}/cart`} component={Cart} />
     </Switch>

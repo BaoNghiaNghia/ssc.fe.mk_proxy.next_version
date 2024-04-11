@@ -1,7 +1,7 @@
 import React from 'react';
 import { Menu } from 'antd';
 import { NavLink, useRouteMatch } from 'react-router-dom';
-import { FiHome } from "react-icons/fi";
+import { FiHome } from 'react-icons/fi';
 import FeatherIcon from 'feather-icons-react';
 import propTypes from 'prop-types';
 import { NavTitle } from './style';
@@ -19,7 +19,7 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
     !topMenu ? [`${mainPathSplit.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : [],
   );
 
-  const { userInfo } = useSelector(state => {
+  const { userInfo } = useSelector((state) => {
     return {
       userInfo: state?.auth?.userInfo,
     };
@@ -55,88 +55,76 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
       overflowedIndicator={<FeatherIcon icon="more-vertical" />}
       openKeys={openKeys}
     >
-      {
-        [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.SUPER_ADMIN, ROLE_GENERAL.ADMIN].includes(userInfo?.group?.role) ? (
-          <Menu.Item
-            icon={
-              !topMenu && (
-                <NavLink className="menuItem-icon" to={`${path}/tong-quan`}>
-                  <FiHome fontSize={16} color="gray"/>
-                </NavLink>
-              )
-            }
-            key="tong-quan"
-          >
-            <NavLink onClick={toggleCollapsed} to={`${path}/tong-quan`}>
-              Proxies
-            </NavLink>
-          </Menu.Item>
-        ) : null
-      }
-      {
-        [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.SUPER_ADMIN].includes(userInfo?.group?.role) ? (
-          <>{!topMenu && <NavTitle className="sidebar-nav-title">PACKAGE</NavTitle>}</>
-        ) : null
-      }
-      {
-        [ROLE_GENERAL.USER_DEFAULT].includes(userInfo?.group?.role) ? (
-          <Menu.Item
-            icon={
-              !topMenu && (
-                <NavLink className="menuItem-icon" to={`${path}/business`}>
-                  <FiHome fontSize={16} color="gray"/>
-                </NavLink>
-              )
-            }
-            key="business"
-          >
-            <NavLink onClick={toggleCollapsed} to={`${path}/business`}>
-              Payment
-            </NavLink>
-          </Menu.Item>
-        ) : null
-      }
-      {
-        [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.SUPER_ADMIN].includes(userInfo?.group?.role) ? (
-          <Menu.Item
-            icon={
-              !topMenu && (
-                <NavLink className="menuItem-icon" to={`${path}/ecommerce/orders`}>
-                  <FiHome fontSize={16} color="gray"/>
-                </NavLink>
-              )
-            }
-            key="ecommerce/orders"
-          >
-            <NavLink onClick={toggleCollapsed} to={`${path}/ecommerce/orders`}>
-              Packages
-            </NavLink>
-          </Menu.Item>
-        ) : null
-      }
-      {
-        [ROLE_GENERAL.USER_DEFAULT].includes(userInfo?.group?.role) ? (
-          <>{!topMenu && <NavTitle className="sidebar-nav-title">SUPPORT</NavTitle>}</>
-        ) : null
-      }
-      {
-        [ROLE_GENERAL.USER_DEFAULT].includes(userInfo?.group?.role) ? (
-          <Menu.Item
-            icon={
-              !topMenu && (
-                <NavLink className="menuItem-icon" to={`${path}/contact/grid`}>
-                  <FeatherIcon icon="message-square" />
-                </NavLink>
-              )
-            }
-            key="Contact Support"
-          >
-            <NavLink onClick={toggleCollapsed} to={`${path}/contact/grid`}>
-              Support
-            </NavLink>
-          </Menu.Item>
-        ) : null
-      }
+      {[ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.SUPER_ADMIN, ROLE_GENERAL.ADMIN].includes(userInfo?.group?.role) ? (
+        <Menu.Item
+          icon={
+            !topMenu && (
+              <NavLink className="menuItem-icon" to={`${path}/tong-quan`}>
+                <FiHome fontSize={16} color="gray" />
+              </NavLink>
+            )
+          }
+          key="tong-quan"
+        >
+          <NavLink onClick={toggleCollapsed} to={`${path}/tong-quan`}>
+            Proxies
+          </NavLink>
+        </Menu.Item>
+      ) : null}
+      {[ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.SUPER_ADMIN].includes(userInfo?.group?.role) ? (
+        <>{!topMenu && <NavTitle className="sidebar-nav-title">PACKAGE</NavTitle>}</>
+      ) : null}
+      {[ROLE_GENERAL.USER_DEFAULT].includes(userInfo?.group?.role) ? (
+        <Menu.Item
+          icon={
+            !topMenu && (
+              <NavLink className="menuItem-icon" to={`${path}/package/plans`}>
+                <FiHome fontSize={16} color="gray" />
+              </NavLink>
+            )
+          }
+          key="business"
+        >
+          <NavLink onClick={toggleCollapsed} to={`${path}/package/plans`}>
+            Payment
+          </NavLink>
+        </Menu.Item>
+      ) : null}
+      {[ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.SUPER_ADMIN].includes(userInfo?.group?.role) ? (
+        <Menu.Item
+          icon={
+            !topMenu && (
+              <NavLink className="menuItem-icon" to={`${path}/ecommerce/orders`}>
+                <FiHome fontSize={16} color="gray" />
+              </NavLink>
+            )
+          }
+          key="ecommerce/orders"
+        >
+          <NavLink onClick={toggleCollapsed} to={`${path}/ecommerce/packages`}>
+            Packages
+          </NavLink>
+        </Menu.Item>
+      ) : null}
+      {[ROLE_GENERAL.USER_DEFAULT].includes(userInfo?.group?.role) ? (
+        <>{!topMenu && <NavTitle className="sidebar-nav-title">SUPPORT</NavTitle>}</>
+      ) : null}
+      {[ROLE_GENERAL.USER_DEFAULT].includes(userInfo?.group?.role) ? (
+        <Menu.Item
+          icon={
+            !topMenu && (
+              <NavLink className="menuItem-icon" to={`${path}/contact/grid`}>
+                <FeatherIcon icon="message-square" />
+              </NavLink>
+            )
+          }
+          key="Contact Support"
+        >
+          <NavLink onClick={toggleCollapsed} to={`${path}/contact/grid`}>
+            Support
+          </NavLink>
+        </Menu.Item>
+      ) : null}
     </Menu>
   );
 }
@@ -144,7 +132,7 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
 MenuItems.propTypes = {
   darkMode: propTypes.bool,
   topMenu: propTypes.bool,
-  toggleCollapsed: propTypes.func
+  toggleCollapsed: propTypes.func,
 };
 
 export default MenuItems;
