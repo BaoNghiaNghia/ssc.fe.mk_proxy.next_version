@@ -13,6 +13,7 @@ import { orderFilter } from '../../redux/orders/actionCreator';
 import { ShareButtonPageHeader } from '../../components/buttons/share-button/share-button';
 import { ExportButtonPageHeader } from '../../components/buttons/export-button/export-button';
 import { CalendarButtonPageHeader } from '../../components/buttons/calendar-button/calendar-button';
+import { ROLE_GENERAL } from '../../variables';
 
 function Orders() {
   const dispatch = useDispatch();
@@ -96,31 +97,37 @@ function Orders() {
       title: 'Order Id',
       dataIndex: 'id',
       key: 'id',
+      role: [ROLE_GENERAL.SUPER_ADMIN, ROLE_GENERAL.ADMIN]
     },
     {
       title: 'customer',
       dataIndex: 'customer',
       key: 'customer',
+      role: [ROLE_GENERAL.SUPER_ADMIN, ROLE_GENERAL.ADMIN]
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      role: [ROLE_GENERAL.SUPER_ADMIN, ROLE_GENERAL.ADMIN]
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
+      role: [ROLE_GENERAL.SUPER_ADMIN, ROLE_GENERAL.ADMIN]
     },
     {
       title: 'Date',
       dataIndex: 'date',
       key: 'date',
+      role: [ROLE_GENERAL.SUPER_ADMIN, ROLE_GENERAL.ADMIN]
     },
     {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
+      role: [ROLE_GENERAL.SUPER_ADMIN, ROLE_GENERAL.ADMIN]
     },
   ];
 

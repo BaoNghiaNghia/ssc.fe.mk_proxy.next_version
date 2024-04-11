@@ -1,8 +1,10 @@
 /* eslint-disable */
 import axios from "axios";
+import Cookies from 'js-cookie';
 import { BASE_URL, TIMEOUT_REQUEST_API } from "../variables/index";
 
-let token = JSON.parse(localStorage.getItem("authTokens"));
+// let token = JSON.parse(localStorage.getItem("authTokens"));
+let token = Cookies.get('logedIn');
 axios.defaults.timeout = TIMEOUT_REQUEST_API;
 
 class ApiFactory {

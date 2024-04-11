@@ -5,6 +5,8 @@ import { FiHome } from "react-icons/fi";
 import FeatherIcon from 'feather-icons-react';
 import propTypes from 'prop-types';
 import { NavTitle } from './style';
+import { useSelector } from 'react-redux';
+import { ROLE_GENERAL } from '../variables/index';
 
 function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
   const { path } = useRouteMatch();
@@ -17,6 +19,12 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
     !topMenu ? [`${mainPathSplit.length > 2 ? mainPathSplit[1] : 'dashboard'}`] : [],
   );
 
+  const { userInfo } = useSelector(state => {
+    return {
+      userInfo: state?.auth?.userInfo,
+    };
+  });
+
   const onOpenChange = (keys) => {
     setOpenKeys(keys[keys.length - 1] !== 'recharts' ? [keys.length && keys[keys.length - 1]] : keys);
   };
@@ -24,6 +32,8 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
   const onClick = (item) => {
     if (item.keyPath.length === 1) setOpenKeys([]);
   };
+
+  console.log('---- sadosdiaso ', userInfo?.group?.role);
 
   return (
     <Menu
@@ -45,65 +55,88 @@ function MenuItems({ darkMode, toggleCollapsed, topMenu }) {
       overflowedIndicator={<FeatherIcon icon="more-vertical" />}
       openKeys={openKeys}
     >
-      <Menu.Item
-        icon={
-          !topMenu && (
-            <NavLink className="menuItem-icon" to={`${path}/tong-quan`}>
-              <FiHome fontSize={16} color="gray"/>
+      {
+        [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.SUPER_ADMIN, ROLE_GENERAL.ADMIN].includes(userInfo?.group?.role) ? (
+          <Menu.Item
+            icon={
+              !topMenu && (
+                <NavLink className="menuItem-icon" to={`${path}/tong-quan`}>
+                  <FiHome fontSize={16} color="gray"/>
+                </NavLink>
+              )
+            }
+            key="tong-quan"
+          >
+            <NavLink onClick={toggleCollapsed} to={`${path}/tong-quan`}>
+              Proxies
             </NavLink>
-          )
-        }
-        key="tong-quan"
-      >
-        <NavLink onClick={toggleCollapsed} to={`${path}/tong-quan`}>
-          Proxies
-        </NavLink>
-      </Menu.Item>
-
-      {!topMenu && <NavTitle className="sidebar-nav-title">PACKAGE</NavTitle>}
-      <Menu.Item
-        icon={
-          !topMenu && (
-            <NavLink className="menuItem-icon" to={`${path}/business`}>
-              <FiHome fontSize={16} color="gray"/>
+          </Menu.Item>
+        ) : null
+      }
+      {
+        [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.SUPER_ADMIN].includes(userInfo?.group?.role) ? (
+          <>{!topMenu && <NavTitle className="sidebar-nav-title">PACKAGE</NavTitle>}</>
+        ) : null
+      }
+      {
+        [ROLE_GENERAL.USER_DEFAULT].includes(userInfo?.group?.role) ? (
+          <Menu.Item
+            icon={
+              !topMenu && (
+                <NavLink className="menuItem-icon" to={`${path}/business`}>
+                  <FiHome fontSize={16} color="gray"/>
+                </NavLink>
+              )
+            }
+            key="business"
+          >
+            <NavLink onClick={toggleCollapsed} to={`${path}/business`}>
+              Payment
             </NavLink>
-          )
-        }
-        key="business"
-      >
-        <NavLink onClick={toggleCollapsed} to={`${path}/business`}>
-          Payment
-        </NavLink>
-      </Menu.Item>
-      <Menu.Item
-        icon={
-          !topMenu && (
-            <NavLink className="menuItem-icon" to={`${path}/ecommerce/orders`}>
-              <FiHome fontSize={16} color="gray"/>
+          </Menu.Item>
+        ) : null
+      }
+      {
+        [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.SUPER_ADMIN].includes(userInfo?.group?.role) ? (
+          <Menu.Item
+            icon={
+              !topMenu && (
+                <NavLink className="menuItem-icon" to={`${path}/ecommerce/orders`}>
+                  <FiHome fontSize={16} color="gray"/>
+                </NavLink>
+              )
+            }
+            key="ecommerce/orders"
+          >
+            <NavLink onClick={toggleCollapsed} to={`${path}/ecommerce/orders`}>
+              Packages
             </NavLink>
-          )
-        }
-        key="ecommerce/orders"
-      >
-        <NavLink onClick={toggleCollapsed} to={`${path}/ecommerce/orders`}>
-          Packages
-        </NavLink>
-      </Menu.Item>
-      {!topMenu && <NavTitle className="sidebar-nav-title">SUPPORT</NavTitle>}
-      <Menu.Item
-        icon={
-          !topMenu && (
-            <NavLink className="menuItem-icon" to={`${path}/contact/grid`}>
-              <FeatherIcon icon="message-square" />
+          </Menu.Item>
+        ) : null
+      }
+      {
+        [ROLE_GENERAL.USER_DEFAULT].includes(userInfo?.group?.role) ? (
+          <>{!topMenu && <NavTitle className="sidebar-nav-title">SUPPORT</NavTitle>}</>
+        ) : null
+      }
+      {
+        [ROLE_GENERAL.USER_DEFAULT].includes(userInfo?.group?.role) ? (
+          <Menu.Item
+            icon={
+              !topMenu && (
+                <NavLink className="menuItem-icon" to={`${path}/contact/grid`}>
+                  <FeatherIcon icon="message-square" />
+                </NavLink>
+              )
+            }
+            key="Contact Support"
+          >
+            <NavLink onClick={toggleCollapsed} to={`${path}/contact/grid`}>
+              Support
             </NavLink>
-          )
-        }
-        key="Contact Support"
-      >
-        <NavLink onClick={toggleCollapsed} to={`${path}/contact/grid`}>
-          Support
-        </NavLink>
-      </Menu.Item>
+          </Menu.Item>
+        ) : null
+      }
     </Menu>
   );
 }

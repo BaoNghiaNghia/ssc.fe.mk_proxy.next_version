@@ -16,9 +16,10 @@ import Heading from '../../heading/heading';
 
 function AuthInfo() {
   const dispatch = useDispatch();
-  const { isAuthenticate } = useSelector(state => {
+  const { isAuthenticate, userInfo } = useSelector(state => {
     return {
       isAuthenticate: state.fb.auth.uid,
+      userInfo: state?.auth?.userInfo
     };
   });
 
@@ -42,8 +43,8 @@ function AuthInfo() {
         <figure className="user-dropdwon__info">
           <img src={require('../../../static/img/avatar/chat-auth.png')} alt="" />
           <figcaption>
-            <Heading as="h5">Abdullah Bin Talha</Heading>
-            <p>UI Expert</p>
+            <Heading as="h5">{ userInfo?.fullname }</Heading>
+            <p>{ userInfo?.email }</p>
           </figcaption>
         </figure>
         <ul className="user-dropdwon__links">

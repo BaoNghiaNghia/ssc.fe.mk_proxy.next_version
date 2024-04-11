@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TrafficTableWrapper } from '../../style';
 import { Cards } from '../../../../components/cards/frame/cards-frame';
 import { trafficChanelGetData, trafficChanelFilterData } from '../../../../redux/chartContent/actionCreator';
+import actions from '../../../../redux/proxies/actions';
+import { ROLE_GENERAL } from '../../../../variables';
 
 const moreContent = (
   <>
@@ -34,42 +36,63 @@ const moreContent = (
 
 const locationColumns = [
   {
-    title: 'Channel',
-    dataIndex: 'channel',
-    key: 'channel',
+    title: 'URL',
+    dataIndex: 'url',
+    key: 'url',
+    role: [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.ADMIN]
   },
   {
-    title: 'Sessions',
-    dataIndex: 'sessions',
-    key: 'sessions',
+    title: 'Type',
+    dataIndex: 'type',
+    key: 'type',
+    role: [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.ADMIN]
   },
   {
-    title: 'Goal Conv. Rate',
-    dataIndex: 'rate',
-    key: 'rate',
+    title: 'Version',
+    dataIndex: 'version',
+    key: 'version',
+    role: [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.ADMIN]
   },
   {
-    title: 'Goals Completions',
-    dataIndex: 'completions',
-    key: 'completions',
+    title: 'Started At',
+    dataIndex: 'started_at',
+    key: 'started_at',
+    role: [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.ADMIN]
   },
   {
-    title: 'Percentage of Traffic (%)',
-    dataIndex: 'percentage',
-    key: 'percentage',
+    title: 'Expired At',
+    dataIndex: 'expired_at',
+    key: 'expired_at',
+    role: [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.ADMIN]
   },
   {
-    title: 'Value',
-    dataIndex: 'value',
-    key: 'value',
+    title: 'Status',
+    dataIndex: 'status',
+    key: 'status',
+    role: [ROLE_GENERAL.ADMIN]
+  },
+  {
+    title: 'Live',
+    dataIndex: 'live',
+    key: 'live',
+    role: [ROLE_GENERAL.ADMIN]
+  },
+  {
+    title: 'Action',
+    dataIndex: 'action',
+    key: 'action',
+    role: [ROLE_GENERAL.USER_DEFAULT, ROLE_GENERAL.ADMIN, ROLE_GENERAL.SUPER_ADMIN]
   },
 ];
 
 function TrafficChannel() {
   const dispatch = useDispatch();
-  const { trafficState } = useSelector(state => {
+  const { trafficState, userInfo, userProxies, userProxiesPagination } = useSelector(state => {
     return {
       trafficState: state.chartContent.trafficChanelData,
+      userInfo: state?.auth?.userInfo,
+      userProxies: state?.proxies?.userProxies?.items,
+      userProxiesPagination: state?.proxies?.userProxies?.meta
     };
   });
 
@@ -77,116 +100,58 @@ function TrafficChannel() {
     traffic: 'year',
   });
 
+
   useEffect(() => {
     if (trafficChanelGetData) {
       dispatch(trafficChanelGetData());
     }
+
+    if (userInfo) {
+      switch (userInfo?.group?.role) {
+        case ROLE_GENERAL.USER_DEFAULT:
+          dispatch(actions.fetchListUserProxyBegin());
+          break;
+  
+        case ROLE_GENERAL.ADMIN:
+          dispatch(actions.fetchListUserProxyBegin());
+          break;
+  
+        case ROLE_GENERAL.SUPER_ADMIN:
+          dispatch(actions.fetchListUserProxyBegin());
+          break;
+  
+        default:
+          dispatch(actions.fetchListUserProxyBegin());
+      }
+    }
+
   }, [dispatch]);
 
-  const locationData = trafficState !== null && [
-    {
-      key: '1',
-      channel: 'Direct',
-      sessions: trafficState.direct.sessions,
-      rate: `${trafficState.direct.rate}%`,
-      completions: trafficState.direct.goals,
-      percentage: (
-        <Progress
-          percent={trafficState.direct.percent}
-          strokeWidth={5}
-          status="active"
-          showInfo={false}
-          className="progress-dt progress-primary"
-        />
+  const columnMatchRole = [];
+
+  locationColumns.map(item => {
+    if (item.role.includes(userInfo?.group?.role)) {
+      return columnMatchRole.push(item);
+    }
+  });
+
+  const locationData = userProxies?.map(item => {
+    return {
+      key: item.id,
+      url: item.proxy_url,
+      type: item.proxy_type,
+      version: item.proxy_version,
+      started_at: item.started_at,
+      expired_at: item.expired_at,
+      action: (
+        <div>
+          <Link to={`/proxies/edit/${item.id}`}>
+            <FeatherIcon size={16} icon="edit-3" />
+          </Link>
+        </div>
       ),
-      value: `${trafficState.direct.value}%`,
-    },
-    {
-      key: '2',
-      channel: 'Email',
-      sessions: trafficState.email.sessions,
-      rate: `${trafficState.email.rate}%`,
-      completions: trafficState.email.goals,
-      percentage: (
-        <Progress
-          percent={trafficState.email.percent}
-          strokeWidth={5}
-          status="active"
-          showInfo={false}
-          className="progress-et progress-secondary"
-        />
-      ),
-      value: `${trafficState.email.value}%`,
-    },
-    {
-      key: '3',
-      channel: 'Organic Search',
-      sessions: trafficState.search.sessions,
-      rate: `${trafficState.search.rate}%`,
-      completions: trafficState.search.goals,
-      percentage: (
-        <Progress
-          percent={trafficState.search.percent}
-          strokeWidth={5}
-          status="active"
-          showInfo={false}
-          className="progress-ost progress-success"
-        />
-      ),
-      value: `${trafficState.search.value}%`,
-    },
-    {
-      key: '4',
-      channel: 'Referral',
-      sessions: trafficState.referral.sessions,
-      rate: `${trafficState.referral.rate}%`,
-      completions: trafficState.referral.goals,
-      percentage: (
-        <Progress
-          percent={trafficState.referral.percent}
-          strokeWidth={5}
-          status="active"
-          showInfo={false}
-          className="progress-rt progress-info"
-        />
-      ),
-      value: `${trafficState.referral.value}%`,
-    },
-    {
-      key: '5',
-      channel: 'Social Media',
-      sessions: trafficState.media.sessions,
-      rate: `${trafficState.media.rate}%`,
-      completions: trafficState.media.goals,
-      percentage: (
-        <Progress
-          percent={trafficState.media.percent}
-          strokeWidth={5}
-          status="active"
-          showInfo={false}
-          className="progress-smt progress-warning"
-        />
-      ),
-      value: `${trafficState.media.value}%`,
-    },
-    {
-      key: '6',
-      channel: 'Other',
-      sessions: trafficState.other.sessions,
-      rate: `${trafficState.other.rate}%`,
-      completions: trafficState.other.goals,
-      percentage: (
-        <Progress
-          percent={trafficState.other.percent}
-          strokeWidth={5}
-          status="active"
-          showInfo={false}
-          className="progress-ot progress-danger"
-        />
-      ),
-      value: `${trafficState.other.value}%`,
-    },
-  ];
+    };
+  })
 
   const handleActiveChangeTraffic = value => {
     setState({
@@ -226,7 +191,7 @@ function TrafficChannel() {
       >
         <TrafficTableWrapper>
           <div className="table-bordered table-responsive">
-            <Table columns={locationColumns} dataSource={locationData} pagination={false} />
+            <Table columns={columnMatchRole} dataSource={locationData} pagination={false} />
           </div>
         </TrafficTableWrapper>
       </Cards>

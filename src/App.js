@@ -6,8 +6,9 @@ import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom';
 import { ReactReduxFirebaseProvider, isLoaded } from 'react-redux-firebase';
 import { ConfigProvider, Spin } from 'antd';
-import { AuthProvider } from './contexts/AuthContext';
-import store, { rrfProps } from './redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { ToastContainer } from 'react-toastify';
+import { persistor, rrfProps, store } from './redux/store';
 import Admin from './routes/admin';
 import Auth from './routes/auth';
 import './static/css/style.css';
@@ -18,7 +19,7 @@ import 'antd/dist/antd.less';
 const { theme } = config;
 
 const ProviderConfig = () => {
-  const { rtl, isLoggedIn, topMenu, darkMode, auth } = useSelector((state) => {
+  const { rtl, isLoggedIn, topMenu, darkMode, auth } = useSelector(state => {
     return {
       darkMode: state.ChangeLayoutMode.data,
       rtl: state.ChangeLayoutMode.rtlData,
@@ -40,37 +41,40 @@ const ProviderConfig = () => {
   }, [setPath]);
 
   return (
-    <AuthProvider>
-      <ConfigProvider direction={rtl ? 'rtl' : 'ltr'}>
-        {/* <AuthProvider> */}
-        <ThemeProvider theme={{ ...theme, rtl, topMenu, darkMode }}>
-          {/* <AuthProvider> */}
-          <ReactReduxFirebaseProvider {...rrfProps}>
-            {!isLoaded(auth) ? (
-              <div className="spin">
-                <Spin />
-              </div>
-            ) : (
-              <Router basename={process.env.PUBLIC_URL}>
-                {!isLoggedIn ? <Route path="/" component={Auth} /> : <ProtectedRoute path="/admin" component={Admin} />}
-                {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
-                  <Redirect to="/admin" />
-                )}
-              </Router>
-            )}
-          </ReactReduxFirebaseProvider>
-          {/* </AuthProvider> */}
-        </ThemeProvider>
-        {/* </AuthProvider> */}
-      </ConfigProvider>
-    </AuthProvider>
+    <ConfigProvider direction={rtl ? 'rtl' : 'ltr'}>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar="true"
+        limit={2}
+        theme='light'
+      />
+      <ThemeProvider theme={{ ...theme, rtl, topMenu, darkMode }}>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          {!isLoaded(auth) ? (
+            <div className="spin">
+              <Spin />
+            </div>
+          ) : (
+            <Router basename={process.env.PUBLIC_URL}>
+              {!isLoggedIn ? <Route path="/" component={Auth} /> : <ProtectedRoute path="/admin" component={Admin} />}
+              {isLoggedIn && (path === process.env.PUBLIC_URL || path === `${process.env.PUBLIC_URL}/`) && (
+                <Redirect to="/admin" />
+              )}
+            </Router>
+          )}
+        </ReactReduxFirebaseProvider>
+      </ThemeProvider>
+    </ConfigProvider>
   );
-};
+}
 
 function App() {
   return (
     <Provider store={store}>
-      <ProviderConfig />
+      <PersistGate loading={<div>Đang tải...</div>} persistor={persistor}>
+        <ProviderConfig />
+      </PersistGate>
     </Provider>
   );
 }

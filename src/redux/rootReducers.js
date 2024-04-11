@@ -25,6 +25,7 @@ import Contact from './contact/reducers';
 import Profile from './profile/reducers';
 import Calender from './calendar/reducers';
 import FileManager from './fileManager/reducers';
+import ProxyReducer from './proxies/reducers';
 import { axiosCrudReducer, axiosSingleCrudReducer } from './crud/axios/reducers';
 
 import { fsCrudReducer, fsSingleCrudReducer } from './firebase/firestore/reducers';
@@ -69,6 +70,7 @@ const rootReducers = combineReducers({
   FileManager,
   AxiosCrud: axiosCrudReducer,
   SingleAxiosCrud: axiosSingleCrudReducer,
+  proxies: ProxyReducer
 });
 
 export default rootReducers;

@@ -1,90 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { Form, Input, Button } from 'antd';
-import { useSelector } from 'react-redux';
+import React, { useCallback, useState} from 'react';
+import { Link, NavLink, useHistory } from 'react-router-dom';
+import { Form, Input, Button, Image } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { FacebookOutlined, TwitterOutlined } from '@ant-design/icons';
+import { FacebookOutlined, TwitterOutlined, UserOutlined } from '@ant-design/icons';
 import { Auth0Lock } from 'auth0-lock';
+import { MdOutlinePassword } from "react-icons/md";
 import { AuthWrapper } from './style';
-// import { login } from '../../../../redux/authentication/actionCreator';
+import actionAuths from '../../../../redux/authentication/actions';
 import { Checkbox } from '../../../../components/checkbox/checkbox';
 import Heading from '../../../../components/heading/heading';
 import { auth0options } from '../../../../config/auth0';
-import AuthContext from '../../../../contexts/AuthContext';
-import { useContext } from 'react';
+
+import logoSSC from '../../../../static/img/Logo_Dark.svg';
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
+const { loginBegin } = actionAuths;
+
 function SignIn() {
-  const authContext = useContext(AuthContext);
-  const { loginUser } = authContext;
-  // const history = useHistory();
-  // const dispatch = useDispatch();
+  const history = useHistory();
+  const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.auth.loading);
   const [form] = Form.useForm();
   const [state, setState] = useState({
     checked: null,
   });
 
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
-
   const lock = new Auth0Lock(clientId, domain, auth0options);
 
-  const handleChangeForm = (e) => {
-    // setErrors({});
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+  const handleSubmit = useCallback(() => {
+    const loginAction = loginBegin({
+      request: {
+        email: form.getFieldValue('email'),
+        password: form.getFieldValue('password'),
+      },
+      history
     });
-  };
 
-  const handleSubmit = async (formData) => {
-    setLoading(true);
-    try {
-      const validationErrors = {};
-      if (!formData.email.trim()) {
-        validationErrors.email = 'Email is required';
-      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-        validationErrors.email = 'Email is not valid';
-      }
-
-      if (!formData.password.trim()) {
-        validationErrors.password = 'Password is required';
-      }
-
-      // setErrors(validationErrors);
-
-      if (Object.keys(validationErrors).length === 0) {
-        // loginUser(formData.email, formData.password);
-      }
-
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      // console.log(err);
-      // if (err.response) {
-      //   toast.error(t(`error_code.${err.response.data.error_code}`));
-      // }
-    }
-  };
-
-  // const handleSubmit = useCallback(() => {
-  //   dispatch(login());
-  //   history.push('/admin');
-  // }, [history, dispatch]);
+    dispatch(loginAction);
+  }, [history, dispatch]);
 
   const onChange = (checked) => {
     setState({ ...state, checked });
   };
 
-  lock.on('authenticated', (authResult) => {
-    lock.getUserInfo(authResult.accessToken, (error) => {
+  lock.on('authenticated', authResult => {
+    lock.getUserInfo(authResult.accessToken, error => {
       if (error) {
         return;
       }
@@ -100,33 +63,42 @@ function SignIn() {
         Don&rsquo;t have an account? <NavLink to="/register">Sign up now</NavLink>
       </p>
       <div className="auth-contents">
-        <Form name="login" form={form} onFinish={() => handleSubmit(formData)} layout="vertical">
-          <Heading as="h3">Đăng nhập</Heading>
+        <Form name="login" form={form} onFinish={handleSubmit} layout="vertical">
+          <div style={{ marginBottom: '40px' }}>
+            <Image src={logoSSC} preview={false} height="50px"/>
+          </div>
+          <Heading as="h3">
+            Đăng nhập
+          </Heading>
           <Form.Item
-            rules={[{ message: 'Please input your username or Email!', required: true }]}
-            initialValue="name@example.com"
-            label="Username or Email Address"
+            name="email"
+            rules={[
+              { message: 'Please input your email!', required: true }
+            ]}
+            label="Email Address"
           >
-            <Input name="email" onChange={handleChangeForm} />
+            <Input prefix={<UserOutlined />} placeholder="Nhập tên đăng nhập" />
           </Form.Item>
           <Form.Item
-            initialValue="123456"
-            label="Password"
-            rules={[{ required: true, message: 'Trường không được trống' }]}
+            name="password"
+            label="Mật khẩu"
+            rules={[
+              {required: true, message: 'Trường không được trống' }
+            ]}
           >
-            <Input.Password placeholder="Password" name="password" onChange={handleChangeForm} />
+            <Input.Password prefix={<MdOutlinePassword />} placeholder="Mật khẩu" />
           </Form.Item>
           <div className="auth-form-action">
             <Checkbox onChange={onChange} checked={state.checked}>
-              Keep me logged in
+              Giữ đăng nhập
             </Checkbox>
             <NavLink className="forgot-pass-link" to="/forgotPassword">
-              Forgot password?
+              Quên mật khẩu?
             </NavLink>
           </div>
           <Form.Item>
-            <Button className="btn-signin" htmlType="submit" type="primary" size="large">
-              {isLoading ? 'Loading...' : 'Sign In'}
+            <Button loading={isLoading} className="btn-signin" htmlType="submit" type="primary" size="middle">
+              {isLoading ? 'Đang tải...' : 'Đăng nhập'}
             </Button>
           </Form.Item>
           <p className="form-divider">

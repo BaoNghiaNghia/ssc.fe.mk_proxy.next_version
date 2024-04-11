@@ -7,9 +7,10 @@ const actions = {
   LOGOUT_SUCCESS: 'LOGOUT_SUCCESS',
   LOGOUT_ERR: 'LOGOUT_ERR',
 
-  loginBegin: () => {
+  loginBegin: (payload) => {
     return {
       type: actions.LOGIN_BEGIN,
+      payload
     };
   },
 

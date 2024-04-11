@@ -5,6 +5,7 @@ const { LOGIN_BEGIN, LOGIN_SUCCESS, LOGIN_ERR, LOGOUT_BEGIN, LOGOUT_SUCCESS, LOG
 
 const initState = {
   login: Cookies.get('logedIn'),
+  userInfo: JSON.parse(Cookies.get('userInfo')),
   loading: false,
   error: null,
 };
@@ -24,8 +25,9 @@ const AuthReducer = (state = initState, action) => {
     case LOGIN_SUCCESS:
       return {
         ...state,
-        login: data,
+        login: data?.token,
         loading: false,
+        userInfo: data?.user
       };
     case LOGIN_ERR:
       return {
